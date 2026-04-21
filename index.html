@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Konto - Anmelden</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+   .login-container {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        width: 100%;
+        max-width: 400px;
+    }
+
+   .logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+   .logo h1 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+   .logo p {
+        color: #666;
+        font-size: 14px;
+    }
+
+   .form-group {
+        margin-bottom: 20px;
+    }
+
+   .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+   .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e1e1;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border 0.2s;
+    }
+
+   .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+   .error-msg {
+        color: #e74c3c;
+        font-size: 13px;
+        margin-top: 8px;
+        min-height: 18px;
+        font-weight: 500;
+    }
+
+   .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+    }
+
+   .btn-login:hover {
+        background: #5568d3;
+    }
+
+   .btn-login:active {
+        transform: scale(0.98);
+    }
+
+   .footer-links {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 13px;
+    }
+
+   .footer-links span {
+        color: #667eea;
+        cursor: pointer;
+        margin: 0 10px;
+    }
+
+   .footer-links span:hover {
+        text-decoration: underline;
+    }
+
+   .success {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+   .success.show {
+        display: block;
+    }
+
+   .success-icon {
+        font-size: 60px;
+        margin-bottom: 20px;
+    }
+
+   .success h2 {
+        color: #27ae60;
+        margin-bottom: 10px;
+    }
+
+   .success p {
+        color: #666;
+    }
+
+   .login-form.hide {
+        display: none;
+    }
+</style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form" id="loginForm">
+            <div class="logo">
+                <h1>Mein Konto</h1>
+                <p>Melden Sie sich an, um fortzufahren</p>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Benutzername</label>
+                <input type="text" id="username" placeholder="max.mustermann" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" placeholder="••••••••">
+                <div class="error-msg" id="errorMsg"></div>
+            </div>
+
+            <button class="btn-login" onclick="login()">Anmelden</button>
+
+            <div class="footer-links">
+                <span onclick="fakeAction('Passwort vergessen')">Passwort vergessen?</span>
+                <span onclick="fakeAction('Registrieren')">Registrieren</span>
+            </div>
+        </div>
+
+        <div class="success" id="successScreen">
+            <div class="success-icon">✓</div>
+            <h2>Erfolgreich angemeldet</h2>
+            <p id="successMsg">War doch nicht so schwer</p>
+        </div>
+    </div>
+
+<script>
+    let failCount = 0;
+    let unlocked = false;
+    const correctUser = 'admin';
+    const correctPass = 'lassmichrein';
+
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMsg = document.getElementById('errorMsg');
+    const loginForm = document.getElementById('loginForm');
+    const successScreen = document.getElementById('successScreen');
+    const successMsg = document.getElementById('successMsg');
+
+    const trollFehler = [
+        'Passwort falsch',
+        'Schon wieder falsch',
+        'Ernsthaft?',
+        'Nein.',
+        'Falsch. Überraschung.',
+        'Du machst das absichtlich oder?',
+        'Tipp: Es ist nicht "123456"',
+        'Vielleicht solltest du es aufschreiben',
+        'Ich glaub nicht dass du das schaffst',
+        'Okay das wird langsam peinlich'
+    ];
+
+    // Enter-Taste = Login
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !unlocked) login();
+    });
+
+    function login() {
+        if (unlocked) return;
+
+        const user = usernameInput.value.trim();
+        const pass = passwordInput.value;
+
+        // Check auf richtiges Login
+        if (user === correctUser && pass === correctPass) {
+            unlocked = true;
+            loginForm.classList.add('hide');
+            successScreen.classList.add('show');
+            successMsg.textContent = 'War doch nicht so schwer';
+            return;
+        }
+
+        // Troll-Modus: Immer Fehler
+        failCount++;
+        
+        if (failCount >= trollFehler.length) {
+            errorMsg.textContent = 'Gib einfach auf. Tipp: Benutzername ist admin';
+        } else {
+            errorMsg.textContent = trollFehler[failCount - 1];
+        }
+
+        // Inputs kurz rot aufblitzen lassen
+        usernameInput.style.borderColor = '#e74c3c';
+        passwordInput.style.borderColor = '#e74c3c';
+        
+        setTimeout(() => {
+            usernameInput.style.borderColor = '#e1e1e1';
+            passwordInput.style.borderColor = '#e1e1e1';
+        }, 500);
+
+        // Passwort-Feld leeren für extra Nerv-Faktor
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+
+    function fakeAction(action) {
+        errorMsg.textContent = `Auch "${action}" wird dir nicht helfen`;
+        setTimeout(() => {
+            errorMsg.textContent = 'Passwort falsch';
+        }, 2000);
+    }
+</script>
+</body>
+</html>
